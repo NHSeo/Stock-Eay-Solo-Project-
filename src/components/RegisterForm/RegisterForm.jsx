@@ -1,23 +1,30 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 
 function RegisterForm() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const errors = useSelector((store) => store.errors);
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const registerUser = (event) => {
     event.preventDefault();
 
-    dispatch({
-      type: 'REGISTER',
-      payload: {
-        username: username,
-        password: password,
-      },
-    });
-  }; // end registerUser
+    if (username && password) {
+      dispatch({
+        type: 'REGISTER',
+        payload: { username, password },
+      });
+    } else {
+      dispatch({ type: 'REGISTER_INPUT_ERROR' });
+    }
+  };
+
+  const goToLogin = () => {
+    history.push('/login');
+  };
 
   return (
     <form className="formPanel" onSubmit={registerUser}>
@@ -52,7 +59,16 @@ function RegisterForm() {
         </label>
       </div>
       <div>
-        <input className="btn" type="submit" name="submit" value="Register" />
+        <input className="btn"
+          type="submit"
+          name="submit"
+          value="Register"
+        />
+        <input className="btn"
+          type="button"
+          value="Go Back"
+          onClick={goToLogin}
+        />
       </div>
     </form>
   );
