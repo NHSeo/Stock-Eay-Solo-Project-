@@ -9,25 +9,20 @@ function Nav() {
 
   return (
     <div className="nav">
-      <Link to="/dashboard">
-        <h2 className="nav-title">STOCK EASY</h2>
-      </Link>
-      <div>
+      <h2 className="nav-title">STOCK EASY</h2>
+      <div className="nav-links">
         {user.id && (
           <>
             <Link className="navLink" to="/dashboard">
               Dashboard
             </Link>
-
             <Link className="navLink" to="/add-items">
-              Add Item
+              Add Items
             </Link>
-
             <Link className="navLink" to="/item-list">
               Item List
             </Link>
-
-            <LogOutButton className="navLink" />
+            <LogOutButton className="navLink logout" />
           </>
         )}
       </div>
