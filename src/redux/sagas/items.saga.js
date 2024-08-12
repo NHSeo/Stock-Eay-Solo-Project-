@@ -11,22 +11,22 @@ function* fetchItems() {
 }
 
 function* increaseItemQuantity(action) {
-    try {
-      yield axios.put(`/api/items/increase/${action.payload}`);
-      yield put({ type: 'FETCH_ITEMS' });
-    } catch (error) {
-      console.error('Increase item quantity failed', error);
-    }
+  try {
+    yield axios.put(`/api/items/increase/${action.payload}`);
+    yield put({ type: 'FETCH_ITEMS' });
+  } catch (error) {
+    console.error('Increase item quantity failed', error);
   }
-  
-  function* decreaseItemQuantity(action) {
-    try {
-      yield axios.put(`/api/items/decrease/${action.payload}`);
-      yield put({ type: 'FETCH_ITEMS' });
-    } catch (error) {
-      console.error('Decrease item quantity failed', error);
-    }
+}
+
+function* decreaseItemQuantity(action) {
+  try {
+    yield axios.put(`/api/items/decrease/${action.payload}`);
+    yield put({ type: 'FETCH_ITEMS' });
+  } catch (error) {
+    console.error('Decrease item quantity failed', error);
   }
+}
 
 function* addItem(action) {
   try {
@@ -38,13 +38,13 @@ function* addItem(action) {
 }
 
 function* editItem(action) {
-    try {
-      yield axios.put(`/api/items/${action.payload.id}`, action.payload);
-      yield put({ type: 'FETCH_ITEMS' });
-    } catch (error) {
-      console.error('Edit item failed', error);
-    }
+  try {
+    yield axios.put(`/api/items/${action.payload.id}`, action.payload);
+    yield put({ type: 'FETCH_ITEMS' });
+  } catch (error) {
+    console.error('Edit item failed', error);
   }
+}
 
 function* deleteItem(action) {
   try {
@@ -55,6 +55,15 @@ function* deleteItem(action) {
   }
 }
 
+function* updateItemSaga(action) {
+  try {
+    yield axios.put(`/api/items/${action.payload.id}`, action.payload);
+    yield put({ type: 'FETCH_ITEMS' });
+  } catch (error) {
+    console.error('Failed to update item:', error);
+  }
+}
+
 function* itemsSaga() {
   yield takeLatest('FETCH_ITEMS', fetchItems);
   yield takeLatest('INCREASE_ITEM_QUANTITY', increaseItemQuantity);
@@ -62,6 +71,7 @@ function* itemsSaga() {
   yield takeLatest('ADD_ITEM', addItem);
   yield takeLatest('DELETE_ITEM', deleteItem);
   yield takeLatest('EDIT_ITEM', editItem);
+  yield takeLatest('UPDATE_ITEM', updateItemSaga);
 }
 
 export default itemsSaga;
