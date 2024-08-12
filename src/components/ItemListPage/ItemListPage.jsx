@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setThreshold } from "../../redux/reducers/thresholds.reducer";
 import '../ItemListPage/ItemListPage.css';
@@ -7,6 +7,7 @@ function ItemListPage() {
     const dispatch = useDispatch();
     const items = useSelector((store) => store.items);
     const thresholds = useSelector((store) => store.thresholds);
+    const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
         dispatch({ type: 'FETCH_ITEMS' });
@@ -19,7 +20,6 @@ function ItemListPage() {
     const handleDecrease = (itemId) => {
         dispatch({ type: 'DECREASE_ITEM_QUANTITY', payload: itemId });
     };
-
 
     const handleThresholdChange = (category, value) => {
         dispatch(setThreshold(category, value));
@@ -34,10 +34,27 @@ function ItemListPage() {
         return categories;
     }, {});
 
+    const filteredItems = Object.keys(categorizedItems).reduce((filtered, category) => {
+        const itemsInCategory = categorizedItems[category].filter(item =>
+            item.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        if (itemsInCategory.length > 0) {
+            filtered[category] = itemsInCategory;
+        }
+        return filtered;
+    }, {});
+
     return (
         <div className="item-list-container">
             <h2>Item List</h2>
-            {Object.keys(categorizedItems).map((category) => (
+            <input
+                type="text"
+                placeholder="Search items..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="search-input"
+            />
+            {Object.keys(filteredItems).map((category) => (
                 <div key={category} className="category-section">
                     <h3 className="category-title">{category}</h3>
                     <label className="threshold-input">
@@ -48,7 +65,7 @@ function ItemListPage() {
                             onChange={(e) => handleThresholdChange(category, Number(e.target.value))}
                         />
                     </label>
-                    {categorizedItems[category].map((item) => (
+                    {filteredItems[category].map((item) => (
                         <div key={item.id} className="item-card">
                             <span className="item-name">{item.name}</span>
                             <span className="item-note">{item.note}</span>
