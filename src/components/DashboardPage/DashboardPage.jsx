@@ -10,7 +10,7 @@ import {
   Legend
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
-import './DashboardPage.css';
+import '../DashboardPage/DashboardPage.css';
 
 ChartJS.register(
   CategoryScale,
@@ -24,27 +24,20 @@ ChartJS.register(
 function DashboardPage() {
   const dispatch = useDispatch();
   const items = useSelector((store) => store.items);
-
-  const [lowStockThreshold, setLowStockThreshold] = useState(10);
+  const thresholds = useSelector((store) => store.thresholds);
 
   useEffect(() => {
     dispatch({ type: 'FETCH_ITEMS' });
   }, [dispatch]);
 
-  const lowStockItems = items.filter(item => item.quantity < lowStockThreshold);
-
-  const chartData = {
-    labels: items.slice(0, 10).map(item => item.name),
-    datasets: [
-      {
-        label: 'Top 10 Most Changed Items',
-        data: items.slice(0, 10).map(item => item.quantity),
-        backgroundColor: 'rgba(75,192,192,1)',
-        borderColor: 'rgba(0,0,0,1)',
-        borderWidth: 2,
-      }
-    ]
-  };
+  const categorizedItems = items.reduce((categories, item) => {
+    const category = item.category || 'Uncategorized';
+    if (!categories[category]) {
+      categories[category] = [];
+    }
+    categories[category].push(item);
+    return categories;
+  }, {});
 
   return (
     <div className="dashboard-container">
@@ -54,7 +47,18 @@ function DashboardPage() {
         <div className="dashboard-card">
           <h2>Top 10 Most Changed Items</h2>
           <Bar
-            data={chartData}
+            data={{
+              labels: items.slice(0, 10).map(item => item.name),
+              datasets: [
+                {
+                  label: 'Top 10 Most Changed Items',
+                  data: items.slice(0, 10).map(item => item.quantity),
+                  backgroundColor: 'rgba(75,192,192,1)',
+                  borderColor: 'rgba(0,0,0,1)',
+                  borderWidth: 2,
+                }
+              ]
+            }}
             options={{
               responsive: true,
               scales: {
@@ -67,37 +71,20 @@ function DashboardPage() {
         </div>
         
         <div className="dashboard-card">
-          <h2>Low Stock Alert</h2>
-          <label>
-            Set Low Stock Threshold: 
-            <input
-              type="number"
-              value={lowStockThreshold}
-              onChange={(e) => setLowStockThreshold(Number(e.target.value))}
-            />
-          </label>
-          {lowStockItems.length > 0 ? (
-            <table>
-              <thead>
-                <tr>
-                  <th>Item Name</th>
-                  <th>Quantity</th>
-                  <th>Category</th>
-                </tr>
-              </thead>
-              <tbody>
-                {lowStockItems.map(item => (
-                  <tr key={item.id}>
-                    <td>{item.name}</td>
-                    <td>{item.quantity}</td>
-                    <td>{item.category}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <p>No items are below the low stock threshold.</p>
-          )}
+          <h2>Low Stock Alert by Category</h2>
+          {Object.keys(categorizedItems).map((category) => (
+            <div key={category} className="category-section">
+              <div className="category-title">{category}</div>
+              {categorizedItems[category]
+                .filter(item => item.quantity < (thresholds[category] || 10))
+                .map(item => (
+                  <div key={item.id} className="item-card">
+                    <span className="item-name">{item.name}</span>
+                    <span className="item-quantity">{item.quantity}</span>
+                  </div>
+              ))}
+            </div>
+          ))}
         </div>
       </div>
     </div>

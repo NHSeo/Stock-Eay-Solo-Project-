@@ -23,6 +23,28 @@ router.post('/', (req, res) => {
     });
 });
 
+router.put('/increase/:id', (req, res) => {
+    const { id } = req.params;
+    const queryText = 'UPDATE "items" SET "quantity" = "quantity" + 1 WHERE "id" = $1';
+    pool.query(queryText, [id])
+      .then(() => res.sendStatus(200))
+      .catch(err => {
+        console.error('Error increasing item quantity:', err);
+        res.sendStatus(500);
+      });
+  });
+  
+  router.put('/decrease/:id', (req, res) => {
+    const { id } = req.params;
+    const queryText = 'UPDATE "items" SET "quantity" = "quantity" - 1 WHERE "id" = $1';
+    pool.query(queryText, [id])
+      .then(() => res.sendStatus(200))
+      .catch(err => {
+        console.error('Error decreasing item quantity:', err);
+        res.sendStatus(500);
+      });
+  });
+
 router.delete('/:id', (req, res) => {
   const { id } = req.params;
   const queryText = 'DELETE FROM "items" WHERE "id" = $1';

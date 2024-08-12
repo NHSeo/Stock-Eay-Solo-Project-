@@ -3,36 +3,51 @@
     flex-direction: column;
     align-items: center;
     padding: 20px;
-  }
-  
-  .dashboard-content {
+}
+
+.dashboard-content {
     display: flex;
     flex-direction: column;
     gap: 20px;
     width: 100%;
     max-width: 800px;
-  }
-  
-  .dashboard-card {
-    background-color: #f8f9fa;
+}
+
+.dashboard-card {
+    background-color: #ffffff;
     border: 1px solid #ddd;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: 20px;
     width: 100%;
-  }
-  
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  table, th, td {
-    border: 1px solid #ddd;
-  }
-  
-  th, td {
-    padding: 8px;
-    text-align: left;
-  }
-  
+}
+
+.item-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #d7d7d7;
+    border: 1px solid #000000;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 8px;
+}
+
+.item-name {
+    font-weight: bold;
+}
+
+.item-quantity {
+    font-size: 16px;
+    color: #333;
+}
+
+.category-section {
+    margin-bottom: 20px;
+}
+
+.category-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}

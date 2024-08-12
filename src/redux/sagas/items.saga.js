@@ -10,6 +10,24 @@ function* fetchItems() {
   }
 }
 
+function* increaseItemQuantity(action) {
+    try {
+      yield axios.put(`/api/items/increase/${action.payload}`);
+      yield put({ type: 'FETCH_ITEMS' });
+    } catch (error) {
+      console.error('Increase item quantity failed', error);
+    }
+  }
+  
+  function* decreaseItemQuantity(action) {
+    try {
+      yield axios.put(`/api/items/decrease/${action.payload}`);
+      yield put({ type: 'FETCH_ITEMS' });
+    } catch (error) {
+      console.error('Decrease item quantity failed', error);
+    }
+  }
+
 function* addItem(action) {
   try {
     yield axios.post('/api/items', action.payload);
@@ -39,6 +57,8 @@ function* deleteItem(action) {
 
 function* itemsSaga() {
   yield takeLatest('FETCH_ITEMS', fetchItems);
+  yield takeLatest('INCREASE_ITEM_QUANTITY', increaseItemQuantity);
+  yield takeLatest('DECREASE_ITEM_QUANTITY', decreaseItemQuantity);
   yield takeLatest('ADD_ITEM', addItem);
   yield takeLatest('DELETE_ITEM', deleteItem);
   yield takeLatest('EDIT_ITEM', editItem);
