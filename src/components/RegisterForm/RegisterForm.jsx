@@ -32,7 +32,7 @@ function RegisterForm() {
 
   return (
     <Box component="form" onSubmit={registerUser} noValidate sx={{ mt: 1 }}>
-      <Typography component="h2" variant="h6">
+      <Typography component="h2" variant="h6" color="primary">
         Register User
       </Typography>
       {errors.registrationMessage && (
@@ -51,6 +51,17 @@ function RegisterForm() {
         autoFocus
         value={username}
         onChange={(event) => setUsername(event.target.value)}
+        variant="outlined"
+        sx={{
+          '& .MuiOutlinedInput-root': {
+            '&.Mui-focused fieldset': {
+              borderColor: 'primary.main',
+            },
+          },
+          '& label.Mui-focused': {
+            color: 'primary.main',
+          },
+        }}
       />
       <TextField
         margin="normal"
@@ -63,6 +74,17 @@ function RegisterForm() {
         autoComplete="current-password"
         value={password}
         onChange={(event) => setPassword(event.target.value)}
+        variant="outlined"
+        sx={{
+          '& .MuiOutlinedInput-root': {
+            '&.Mui-focused fieldset': {
+              borderColor: 'primary.main',
+            },
+          },
+          '& label.Mui-focused': {
+            color: 'primary.main',
+          },
+        }}
       />
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
         <Button

@@ -1,18 +1,42 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
+import { styled } from '@mui/system';
+import { ExitToApp } from '@mui/icons-material';
+
+const colors = {
+    buttonBackground: '#6B4F4F',
+    buttonHover: '#B2958F',
+    textColor: '#FFFFFF',
+};
+
+const StyledLogOutButton = styled('button')({
+    borderRadius: '20px',
+    padding: '10px 20px',
+    width: '200px',
+    backgroundColor: colors.buttonBackground,
+    color: colors.textColor,
+    fontWeight: 'bold',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '10px',
+    border: 'none',
+    cursor: 'pointer',
+    '&:hover': {
+        backgroundColor: colors.buttonHover,
+    },
+});
 
 function LogOutButton(props) {
   const dispatch = useDispatch();
   return (
-    <button
-      // This button shows up in multiple locations and is styled differently
-      // because it's styled differently depending on where it is used, the className
-      // is passed to it from it's parents through React props
+    <StyledLogOutButton
       className={props.className}
       onClick={() => dispatch({ type: 'LOGOUT' })}
     >
-      Log Out
-    </button>
+      <ExitToApp sx={{ color: colors.textColor }} />
+      LOG OUT
+    </StyledLogOutButton>
   );
 }
 

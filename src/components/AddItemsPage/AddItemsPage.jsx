@@ -1,12 +1,98 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Box, Container, TextField, Button, Typography, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import { Edit, Delete } from '@mui/icons-material';
+import { styled } from '@mui/system';
 
-function AddItemsPage() {
+const colors = {
+    primaryBackground: '#F5F5F5',
+    primaryText: '#333333',
+    accent: '#6B4F4F',
+    buttonBackground: '#6B4F4F',
+    buttonHover: '#B2958F',
+    tableHeaderBackground: '#6B4F4F',
+    tableRowOddBackground: '#FAFAFA',
+};
+
+const PrimaryButton = styled(Button)({
+    borderRadius: '20px',
+    padding: '10px 20px',
+    width: '200px',
+    backgroundColor: colors.buttonBackground,
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+    '&:hover': {
+        backgroundColor: colors.buttonHover,
+    },
+});
+
+const StyledTextField = styled(TextField)({
+    marginBottom: '20px',
+    '& label.Mui-focused': {
+        color: colors.accent,
+    },
+    '& .MuiInput-underline:after': {
+        borderBottomColor: colors.accent,
+    },
+    '& .MuiOutlinedInput-root': {
+        '&.Mui-focused fieldset': {
+            borderColor: colors.accent,
+        },
+    },
+    '& input': {
+        fontWeight: 'bold',
+        textAlign: 'left',
+    },
+});
+
+const StyledTableCell = styled(TableCell)({
+    backgroundColor: colors.tableHeaderBackground,
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+    textAlign: 'center',
+});
+
+const StyledTableRow = styled(TableRow)({
+    '&:nth-of-type(odd)': {
+        backgroundColor: colors.tableRowOddBackground,
+    },
+    '&:last-child td, &:last-child th': {
+        border: 0,
+    },
+    '& td': {
+        textAlign: 'center',
+        fontWeight: 'bold',
+    },
+});
+
+const StyledDialog = styled(Dialog)({
+    '& .MuiDialog-paper': {
+        borderRadius: '20px',
+        padding: '20px',
+        textAlign: 'center',
+        backgroundColor: colors.primaryBackground,
+    },
+});
+
+const DialogButton = styled(Button)({
+    borderRadius: '20px',
+    padding: '10px 20px',
+    backgroundColor: colors.buttonBackground,
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+    '&:hover': {
+        backgroundColor: colors.buttonHover,
+    },
+});
+
+const AddItemsPage = () => {
     const [itemName, setItemName] = useState('');
     const [note, setNote] = useState('');
     const [category, setCategory] = useState('Meat');
     const [quantity, setQuantity] = useState(1);
     const [editingItemId, setEditingItemId] = useState(null);
+    const [openDialog, setOpenDialog] = useState(false);
+    const [itemIdToDelete, setItemIdToDelete] = useState(null);
     const dispatch = useDispatch();
 
     const items = useSelector((store) => store.items);
@@ -65,128 +151,209 @@ function AddItemsPage() {
         });
     };
 
-    const handleDelete = (itemId) => {
+    const handleDeleteClick = (itemId) => {
+        setItemIdToDelete(itemId);
+        setOpenDialog(true);
+    };
+
+    const handleDeleteConfirm = () => {
         dispatch({
             type: 'DELETE_ITEM',
-            payload: itemId,
+            payload: itemIdToDelete,
         });
+        setOpenDialog(false);
+        setItemIdToDelete(null);
+    };
+
+    const handleDeleteCancel = () => {
+        setOpenDialog(false);
+        setItemIdToDelete(null);
     };
 
     return (
-        <div>
-            <h2>Add New Item</h2>
+        <Container maxWidth="md">
+            <Typography variant="h3" component="h2" gutterBottom sx={{ fontWeight: 'bold' }}>
+                ADD NEW ITEM
+            </Typography>
             <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="itemName">Item Name:</label>
-                    <input
-                        type="text"
-                        id="itemName"
-                        value={itemName}
-                        onChange={(event) => setItemName(event.target.value)}
-                        required
-                    />
-                </div>
-                <div>
-                    <label htmlFor="note">Note:</label>
-                    <input
-                        type="text"
-                        id="note"
-                        value={note}
-                        onChange={(event) => setNote(event.target.value)}
-                    />
-                </div>
-                <div>
-                    <label htmlFor="category">Category:</label>
-                    <select
-                        id="category"
-                        value={category}
-                        onChange={(event) => setCategory(event.target.value)}
-                        required
-                    >
-                        <option value="Meat">Meat</option>
-                        <option value="Veggie">Veggie</option>
-                        <option value="Beverage">Beverage</option>
-                        <option value="Sauce">Sauce</option>
-                        <option value="Rice">Rice</option>
-                        <option value="Kitchen tools">Kitchen tools</option>
-                        <option value="Supplies">Supplies</option>
-                    </select>
-                </div>
-                <div>
-                    <label htmlFor="quantity">Quantity:</label>
-                    <input
-                        type="number"
-                        id="quantity"
-                        value={quantity}
-                        onChange={(event) => setQuantity(event.target.value)}
-                        required
-                        min="0"
-                    />
-                </div>
-                <div>
-                    <button type="submit">Add Item</button>
-                </div>
+                <StyledTextField
+                    fullWidth
+                    label="Item Name"
+                    value={itemName}
+                    onChange={(event) => setItemName(event.target.value)}
+                    margin="normal"
+                />
+                <StyledTextField
+                    fullWidth
+                    label="Note"
+                    value={note}
+                    onChange={(event) => setNote(event.target.value)}
+                    margin="normal"
+                />
+                <StyledTextField
+                    fullWidth
+                    select
+                    label="Category"
+                    value={category}
+                    onChange={(event) => setCategory(event.target.value)}
+                    SelectProps={{
+                        native: true,
+                    }}
+                    margin="normal"
+                >
+                    <option value="Meat">Meat</option>
+                    <option value="Veggie">Veggie</option>
+                    <option value="Beverage">Beverage</option>
+                    <option value="Sauce">Sauce</option>
+                    <option value="Rice">Rice</option>
+                    <option value="Kitchen tools">Kitchen tools</option>
+                    <option value="Supplies">Supplies</option>
+                </StyledTextField>
+                <StyledTextField
+                    fullWidth
+                    label="Quantity"
+                    type="number"
+                    value={quantity}
+                    onChange={(event) => setQuantity(event.target.value)}
+                    margin="normal"
+                />
+                <Box mt={2} mb={10} display="flex" justifyContent="center">
+                    <PrimaryButton type="submit">Add Item</PrimaryButton>
+                </Box>
             </form>
 
-            <h3>Recently Added Items</h3>
-            <ul>
-                {items.slice(0, 10).map((item, index) => (
-                    <li key={`${item.id}-${index}`}>
-                        {editingItemId === item.id ? (
-                            <>
-                                <strong>Name: </strong>
-                                <input
-                                    type="text"
-                                    value={item.name}
-                                    onChange={(e) => handleEditChange(item.id, 'name', e.target.value)}
-                                />
-                                <br />
-                                <strong>Category: </strong>
-                                <select
-                                    value={item.category}
-                                    onChange={(e) => handleEditChange(item.id, 'category', e.target.value)}
-                                >
-                                    <option value="Meat">Meat</option>
-                                    <option value="Veggie">Veggie</option>
-                                    <option value="Beverage">Beverage</option>
-                                    <option value="Sauce">Sauce</option>
-                                    <option value="Rice">Rice</option>
-                                    <option value="Kitchen tools">Kitchen tools</option>
-                                    <option value="Supplies">Supplies</option>
-                                </select>
-                                <br />
-                                <strong>Quantity: </strong>
-                                <input
-                                    type="number"
-                                    value={item.quantity}
-                                    onChange={(e) => handleEditChange(item.id, 'quantity', e.target.value)}
-                                />
-                                <br />
-                                <strong>Note: </strong>
-                                <input
-                                    type="text"
-                                    value={item.note}
-                                    onChange={(e) => handleEditChange(item.id, 'note', e.target.value)}
-                                />
-                                <br />
-                                <button onClick={() => handleSaveEdit(item.id)}>Save</button>
-                                <button onClick={handleCancelEdit}>Cancel</button>
-                                <button onClick={() => handleDelete(item.id)}>Delete</button>
-                            </>
-                        ) : (
-                            <>
-                                <strong>{item.name}</strong> - {item.category} ({item.quantity})
-                                <br />
-                                Note: {item.note}
-                                <br />
-                                <button onClick={() => handleEditClick(item.id)}>Edit</button>
-                                <button onClick={() => handleDelete(item.id)}>Delete</button>
-                            </>
-                        )}
-                    </li>
-                ))}
-            </ul>
-        </div>
+            <Typography variant="h4" component="h3" gutterBottom sx={{ fontWeight: 'bold' }}>
+                RECENTLY ADDED ITEMS
+            </Typography>
+            <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+                <TableContainer>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <StyledTableCell>NAME</StyledTableCell>
+                                <StyledTableCell>NOTE</StyledTableCell>
+                                <StyledTableCell>CATEGORY</StyledTableCell>
+                                <StyledTableCell>QUANTITY</StyledTableCell>
+                                <StyledTableCell>ACTIONS</StyledTableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {items.slice(0, 7).map((item) => (
+                                <StyledTableRow key={item.id}>
+                                    <TableCell component="th" scope="row">
+                                        {editingItemId === item.id ? (
+                                            <TextField
+                                                value={item.name}
+                                                onChange={(e) => handleEditChange(item.id, 'name', e.target.value)}
+                                                margin="normal"
+                                                sx={{ fontWeight: 'bold', textAlign: 'left' }}
+                                            />
+                                        ) : (
+                                            <Typography sx={{ fontWeight: 'bold', textAlign: 'center' }}>{item.name}</Typography>
+                                        )}
+                                    </TableCell>
+                                    <TableCell>
+                                        {editingItemId === item.id ? (
+                                            <TextField
+                                                value={item.note}
+                                                onChange={(e) => handleEditChange(item.id, 'note', e.target.value)}
+                                                margin="normal"
+                                                sx={{ fontWeight: 'bold', textAlign: 'left' }}
+                                            />
+                                        ) : (
+                                            <Typography sx={{ fontWeight: 'bold', textAlign: 'center' }}>{item.note}</Typography>
+                                        )}
+                                    </TableCell>
+                                    <TableCell>
+                                        {editingItemId === item.id ? (
+                                            <TextField
+                                                select
+                                                value={item.category}
+                                                onChange={(e) => handleEditChange(item.id, 'category', e.target.value)}
+                                                SelectProps={{
+                                                    native: true,
+                                                }}
+                                                margin="normal"
+                                                sx={{ fontWeight: 'bold', textAlign: 'left' }}
+                                            >
+                                                <option value="Meat">Meat</option>
+                                                <option value="Veggie">Veggie</option>
+                                                <option value="Beverage">Beverage</option>
+                                                <option value="Sauce">Sauce</option>
+                                                <option value="Rice">Rice</option>
+                                                <option value="Kitchen tools">Kitchen tools</option>
+                                                <option value="Supplies">Supplies</option>
+                                            </TextField>
+                                        ) : (
+                                            <Typography sx={{ fontWeight: 'bold', textAlign: 'center' }}>{item.category}</Typography>
+                                        )}
+                                    </TableCell>
+                                    <TableCell>
+                                        {editingItemId === item.id ? (
+                                            <TextField
+                                                value={item.quantity}
+                                                type="number"
+                                                onChange={(e) => handleEditChange(item.id, 'quantity', e.target.value)}
+                                                margin="normal"
+                                                sx={{ fontWeight: 'bold', textAlign: 'left' }}
+                                            />
+                                        ) : (
+                                            <Typography sx={{ fontWeight: 'bold', textAlign: 'center' }}>{item.quantity}</Typography>
+                                        )}
+                                    </TableCell>
+                                    <TableCell>
+                                        {editingItemId === item.id ? (
+                                            <>
+                                                <Button variant="contained" onClick={() => handleSaveEdit(item.id)} sx={{ fontWeight: 'bold', backgroundColor: '#b2958f', color: '#FFFFFF', '&:hover': { backgroundColor: '#a17b7b' } }}>
+                                                    Save
+                                                </Button>
+                                                <Button onClick={handleCancelEdit} sx={{ marginLeft: '10px', fontWeight: 'bold', color: '#b2958f' }}>
+                                                    Cancel
+                                                </Button>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Button
+                                                    startIcon={<Edit />}
+                                                    onClick={() => handleEditClick(item.id)}
+                                                    sx={{ fontWeight: 'bold', color: '#a27f78' }}
+                                                >
+                                                    Edit
+                                                </Button>
+                                                <Button
+                                                    startIcon={<Delete />}
+                                                    onClick={() => handleDeleteClick(item.id)}
+                                                    sx={{ fontWeight: 'bold', color: '#707070' }}
+                                                >
+                                                    Delete
+                                                </Button>
+                                            </>
+                                        )}
+                                    </TableCell>
+                                </StyledTableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </Paper>
+
+            <StyledDialog
+                open={openDialog}
+                onClose={handleDeleteCancel}
+                aria-labelledby="delete-confirmation-dialog"
+            >
+                <DialogTitle id="delete-confirmation-dialog" sx={{ fontWeight: 'bold' }}>Confirm Deletion</DialogTitle>
+                <DialogContent>
+                    <DialogContentText sx={{ fontWeight: 'bold' }}>
+                        Are you sure you want to delete this item?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <DialogButton onClick={handleDeleteConfirm}>Yes</DialogButton>
+                    <DialogButton onClick={handleDeleteCancel} autoFocus>No</DialogButton>
+                </DialogActions>
+            </StyledDialog>
+        </Container>
     );
 }
 

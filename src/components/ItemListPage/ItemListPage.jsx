@@ -1,9 +1,59 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Box, Container, TextField, Button, Typography, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Divider } from '@mui/material';
+import { Add, Remove } from '@mui/icons-material';
+import { styled } from '@mui/system';
 import { setThreshold } from "../../redux/reducers/thresholds.reducer";
-import '../ItemListPage/ItemListPage.css';
 
-function ItemListPage() {
+const StyledTextField = styled(TextField)({
+    marginBottom: '20px',
+    '& label.Mui-focused': {
+        color: '#333333',
+        fontWeight: 'bold',
+    },
+    '& .MuiInput-underline:after': {
+        borderBottomColor: '#333333',
+    },
+    '& .MuiOutlinedInput-root': {
+        '&.Mui-focused fieldset': {
+            borderColor: '#333333',
+        },
+    },
+    '& input': {
+        fontWeight: 'bold',
+        color: '#333333',
+    },
+});
+
+const StyledTableCell = styled(TableCell)({
+    backgroundColor: '#6B4F4F',
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+    textAlign: 'center',
+});
+
+const StyledTableRow = styled(TableRow)({
+    '&:nth-of-type(odd)': {
+        backgroundColor: '#FAFAFA',
+    },
+    '&:last-child td, &:last-child th': {
+        border: 0,
+    },
+    '& td': {
+        textAlign: 'center',
+        fontWeight: 'bold',
+    },
+});
+
+const CategoryContainer = styled(Box)({
+    marginBottom: '40px',
+});
+
+const ThresholdInput = styled(StyledTextField)({
+    marginBottom: '20px',
+});
+
+const ItemListPage = () => {
     const dispatch = useDispatch();
     const items = useSelector((store) => store.items);
     const thresholds = useSelector((store) => store.thresholds);
@@ -45,40 +95,86 @@ function ItemListPage() {
     }, {});
 
     return (
-        <div className="item-list-container">
-            <h2>Item List</h2>
-            <input
-                type="text"
-                placeholder="Search items..."
+        <Container maxWidth="md">
+            <Typography variant="h3" component="h2" gutterBottom sx={{ fontWeight: 'bold' }}>
+                ITEM LIST
+            </Typography>
+            <StyledTextField
+                fullWidth
+                label="Search items..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="search-input"
             />
             {Object.keys(filteredItems).map((category) => (
-                <div key={category} className="category-section">
-                    <h3 className="category-title">{category}</h3>
-                    <label className="threshold-input">
-                        Set Low Stock Threshold:
-                        <input
-                            type="number"
-                            value={thresholds[category] || ''}
-                            onChange={(e) => handleThresholdChange(category, Number(e.target.value))}
-                        />
-                    </label>
-                    {filteredItems[category].map((item) => (
-                        <div key={item.id} className="item-card">
-                            <span className="item-name">{item.name}</span>
-                            <span className="item-note">{item.note}</span>
-                            <span className="item-quantity">{item.quantity}</span>
-                            <div className="button-group">
-                                <button onClick={() => handleDecrease(item.id)}>-</button>
-                                <button onClick={() => handleIncrease(item.id)}>+</button>
-                            </div>
-                        </div>
-                    ))}
-                </div>
+                <CategoryContainer key={category}>
+                    <Typography variant="h5" component="h3" gutterBottom sx={{ fontWeight: 'bold', color: '#6B4F4F' }}>
+                        {category}
+                    </Typography>
+                    <ThresholdInput
+                        fullWidth
+                        label={`Set Low Stock Threshold for ${category}`}
+                        type="number"
+                        value={thresholds[category] || ''}
+                        onChange={(e) => handleThresholdChange(category, Number(e.target.value))}
+                    />
+                    <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+                        <TableContainer>
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        <StyledTableCell>NAME</StyledTableCell>
+                                        <StyledTableCell>NOTE</StyledTableCell>
+                                        <StyledTableCell>QUANTITY</StyledTableCell>
+                                        <StyledTableCell>ACTIONS</StyledTableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {filteredItems[category].map((item) => (
+                                        <StyledTableRow key={item.id}>
+                                            <TableCell>
+                                                <Typography sx={{ fontWeight: 'bold' }}>{item.name}</Typography>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Typography sx={{ fontWeight: 'bold' }}>{item.note}</Typography>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Typography sx={{ fontWeight: 'bold' }}>{item.quantity}</Typography>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Box display="flex" justifyContent="center">
+                                                    <Button
+                                                        startIcon={<Add />}
+                                                        onClick={() => handleIncrease(item.id)}
+                                                        sx={{ 
+                                                            fontWeight: 'bold', 
+                                                            marginRight: '10px',
+                                                            color: '#a27f78', 
+                                                        }}
+                                                    >
+                                                        INCREASE
+                                                    </Button>
+                                                    <Button
+                                                        startIcon={<Remove />}
+                                                        onClick={() => handleDecrease(item.id)}
+                                                        sx={{ 
+                                                            fontWeight: 'bold', 
+                                                            color: '#707070', 
+                                                        }}
+                                                    >
+                                                        DECREASE
+                                                    </Button>
+                                                </Box>
+                                            </TableCell>
+                                        </StyledTableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </Paper>
+                    <Divider sx={{ marginTop: '40px' }} />
+                </CategoryContainer>
             ))}
-        </div>
+        </Container>
     );
 }
 

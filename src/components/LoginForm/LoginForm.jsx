@@ -39,8 +39,8 @@ function LoginForm() {
 
   return (
     <Box component="form" onSubmit={login} noValidate sx={{ mt: 1 }}>
-      <Typography component="h2" variant="h6">
-        Login
+      <Typography component="h2" variant="h6" color="primary">
+        LOGIN
       </Typography>
       {errors.loginMessage && (
         <Typography color="error" variant="body2">
@@ -58,6 +58,17 @@ function LoginForm() {
         autoFocus
         value={username}
         onChange={(event) => setUsername(event.target.value)}
+        variant="outlined"
+        sx={{
+          '& .MuiOutlinedInput-root': {
+            '&.Mui-focused fieldset': {
+              borderColor: 'primary.main',
+            },
+          },
+          '& label.Mui-focused': {
+            color: 'primary.main',
+          },
+        }}
       />
       <TextField
         margin="normal"
@@ -70,6 +81,17 @@ function LoginForm() {
         autoComplete="current-password"
         value={password}
         onChange={(event) => setPassword(event.target.value)}
+        variant="outlined"
+        sx={{
+          '& .MuiOutlinedInput-root': {
+            '&.Mui-focused fieldset': {
+              borderColor: 'primary.main',
+            },
+          },
+          '& label.Mui-focused': {
+            color: 'primary.main',
+          },
+        }}
       />
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
         <Button
