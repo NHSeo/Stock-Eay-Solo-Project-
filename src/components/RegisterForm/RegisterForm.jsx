@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 
 function RegisterForm() {
   const [username, setUsername] = useState('');
@@ -27,50 +31,60 @@ function RegisterForm() {
   };
 
   return (
-    <form className="formPanel" onSubmit={registerUser}>
-      <h2>Register User</h2>
+    <Box component="form" onSubmit={registerUser} noValidate sx={{ mt: 1 }}>
+      <Typography component="h2" variant="h6">
+        Register User
+      </Typography>
       {errors.registrationMessage && (
-        <h3 className="alert" role="alert">
+        <Typography color="error" variant="body2">
           {errors.registrationMessage}
-        </h3>
+        </Typography>
       )}
-      <div>
-        <label htmlFor="username">
-          Username:
-          <input
-            type="text"
-            name="username"
-            value={username}
-            required
-            onChange={(event) => setUsername(event.target.value)}
-          />
-        </label>
-      </div>
-      <div>
-        <label htmlFor="password">
-          Password:
-          <input
-            type="password"
-            name="password"
-            value={password}
-            required
-            onChange={(event) => setPassword(event.target.value)}
-          />
-        </label>
-      </div>
-      <div>
-        <input className="btn"
+      <TextField
+        margin="normal"
+        required
+        fullWidth
+        id="username"
+        label="Username"
+        name="username"
+        autoComplete="username"
+        autoFocus
+        value={username}
+        onChange={(event) => setUsername(event.target.value)}
+      />
+      <TextField
+        margin="normal"
+        required
+        fullWidth
+        name="password"
+        label="Password"
+        type="password"
+        id="password"
+        autoComplete="current-password"
+        value={password}
+        onChange={(event) => setPassword(event.target.value)}
+      />
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+        <Button
           type="submit"
-          name="submit"
-          value="Register"
-        />
-        <input className="btn"
-          type="button"
-          value="Go Back"
+          fullWidth
+          variant="contained"
+          color="primary"
+          sx={{ mt: 3, mb: 2 }}
+        >
+          Register
+        </Button>
+        <Button
+          fullWidth
+          variant="outlined"
+          color="secondary"
           onClick={goToLogin}
-        />
-      </div>
-    </form>
+          sx={{ mt: 3, mb: 2 }}
+        >
+          Go Back
+        </Button>
+      </Box>
+    </Box>
   );
 }
 

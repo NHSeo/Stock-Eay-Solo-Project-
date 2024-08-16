@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 
 function LoginForm() {
   const [username, setUsername] = useState('');
@@ -23,7 +27,6 @@ function LoginForm() {
     }
   };
 
-
   useEffect(() => {
     if (user.id) {
       history.push('/dashboard');
@@ -35,52 +38,60 @@ function LoginForm() {
   };
 
   return (
-    <form className="formPanel" onSubmit={login}>
-      <h2>Login</h2>
+    <Box component="form" onSubmit={login} noValidate sx={{ mt: 1 }}>
+      <Typography component="h2" variant="h6">
+        Login
+      </Typography>
       {errors.loginMessage && (
-        <h3 className="alert" role="alert">
+        <Typography color="error" variant="body2">
           {errors.loginMessage}
-        </h3>
+        </Typography>
       )}
-      <div>
-        <label htmlFor="username">
-          Username:
-          <input
-            type="text"
-            name="username"
-            required
-            value={username}
-            onChange={(event) => setUsername(event.target.value)}
-          />
-        </label>
-      </div>
-      <div>
-        <label htmlFor="password">
-          Password:
-          <input
-            type="password"
-            name="password"
-            required
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-          />
-        </label>
-      </div>
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <input
-          className="btn"
+      <TextField
+        margin="normal"
+        required
+        fullWidth
+        id="username"
+        label="Username"
+        name="username"
+        autoComplete="username"
+        autoFocus
+        value={username}
+        onChange={(event) => setUsername(event.target.value)}
+      />
+      <TextField
+        margin="normal"
+        required
+        fullWidth
+        name="password"
+        label="Password"
+        type="password"
+        id="password"
+        autoComplete="current-password"
+        value={password}
+        onChange={(event) => setPassword(event.target.value)}
+      />
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+        <Button
           type="submit"
-          name="submit"
-          value="Log In"
-        />
-        <input
-          className="btn"
-          type="button"
-          value="Register"
+          fullWidth
+          variant="contained"
+          color="primary"
+          sx={{ mt: 3, mb: 2 }}
+        >
+          Log In
+        </Button>
+        <Button
+          fullWidth
+          variant="outlined"
+          color="secondary"
           onClick={goToRegister}
-        />
-      </div>
-    </form>
+          sx={{ mt: 3, mb: 2 }}
+        >
+          Register
+        </Button>
+      </Box>
+    </Box>
   );
 }
 
