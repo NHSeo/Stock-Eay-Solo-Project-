@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import Avatar from '@mui/material/Avatar';
@@ -26,13 +26,20 @@ const theme = createTheme({
 });
 
 function RegisterPage() {
+  useEffect(() => {
+    document.querySelector('.main-content').style.marginLeft = '0';
+    
+    return () => {
+      document.querySelector('.main-content').style.marginLeft = '250px';
+    };
+  }, []);
+
   return (
     <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs">
+      <Container component="main" maxWidth="xs" sx={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <CssBaseline />
         <Box
           sx={{
-            marginTop: 8,
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',

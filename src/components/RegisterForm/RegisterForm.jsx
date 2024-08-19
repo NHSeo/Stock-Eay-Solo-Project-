@@ -21,6 +21,8 @@ function RegisterForm() {
         type: 'REGISTER',
         payload: { username, password },
       });
+
+      history.push('/login');
     } else {
       dispatch({ type: 'REGISTER_INPUT_ERROR' });
     }
