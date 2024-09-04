@@ -61,12 +61,6 @@ STRETCH GOAL: Add a search bar to search for items by NAME or NOTE.
 Browsers
 The application will fully support Chrome. All other browsers or versions not listed below are considered out of scope.
 
-Browser Name
-Mobile or Desktop?
-Version
-Chrome
-Desktop
-96.x
 
 
 Technologies
